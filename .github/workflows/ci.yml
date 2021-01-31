@@ -20,9 +20,8 @@ jobs:
       - name: Setup Rust
         uses: actions-rs/toolchain@v1
         with:
-          profile: minimal
           toolchain: ${{ matrix.rust }}
-          override: true
+          components: clippy
       - name: Build for OS X
         if: matrix.os == 'macos-latest'
         run: |
