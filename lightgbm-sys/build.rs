@@ -6,8 +6,6 @@ use std::env;
 use std::path::PathBuf;
 
 fn main() {
-    let target = env::var("TARGET").unwrap();
-
     // CMake
     let dst = Config::new("lightgbm")
         .profile("Release")
@@ -28,10 +26,10 @@ fn main() {
         .expect("Couldn't write bindings.");
 
     // link to appropriate C++ lib
-    if target.contains("apple") {
+    if cfg!(target_os = "macos") {
         println!("cargo:rustc-link-lib=c++");
         println!("cargo:rustc-link-lib=dylib=omp");
-    } else if target.contains("linux") {
+    } else if cfg!(target_os = "linux") {
         println!("cargo:rustc-link-lib=stdc++");
         println!("cargo:rustc-link-lib=dylib=gomp");
     }
@@ -39,7 +37,7 @@ fn main() {
     println!("cargo:rustc-link-search={}", out_path.join("lib").display());
     println!("cargo:rustc-link-search=native={}", dst.display());
 
-    if target.contains("windows") {
+    if cfg!(target_os = "windows") {
         println!("cargo:rustc-link-lib=static=lib_lightgbm");
     } else {
         println!("cargo:rustc-link-lib=static=_lightgbm");
